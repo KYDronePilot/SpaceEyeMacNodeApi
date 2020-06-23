@@ -16,10 +16,10 @@ export function GetWallpaperPathForScreen(
 export interface ReturnedWallpaperOptions {
     scaling?: number
     allowClipping?: number
-    red: number
-    green: number
-    blue: number
-    alpha: number
+    red?: number
+    green?: number
+    blue?: number
+    alpha?: number
 }
 
 export function GetWallpaperOptionsForScreen(

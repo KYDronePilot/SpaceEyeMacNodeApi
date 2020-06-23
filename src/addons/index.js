@@ -1,5 +1,5 @@
 module.exports = {
     DesktopWallpaper: {
-        ...require('./desktopwallpaper')
+        ...require('./desktopwallpaper.node')
     }
 }

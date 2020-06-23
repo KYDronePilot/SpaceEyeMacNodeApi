@@ -1,7 +1,6 @@
 #include <napi.h>
 
-#import <Cocoa/Cocoa.h>
-#import <Foundation/Foundation.h>
+#import <Appkit/Appkit.h>
 
 NSScreen *GetScreenWithID(CGDirectDisplayID id) {
     for (NSScreen *screen in [NSScreen screens]) {
@@ -14,10 +13,10 @@ NSScreen *GetScreenWithID(CGDirectDisplayID id) {
     return nil;
 }
 
-NSString *_SetWallpaper(int displayID, NSString *wallpaperPath, NSNumber *scalingKey, NSNumber *allowClipping, NSColor *fillColor) {
+bool _SetWallpaper(int displayID, NSString *wallpaperPath, NSNumber *scalingKey, NSNumber *allowClipping, NSColor *fillColor, NSError *error) {
     NSScreen *screen = GetScreenWithID((CGDirectDisplayID) displayID);
     if (screen == nil)
-        return nil;
+        return false;
 
     NSDictionary<NSWorkspaceDesktopImageOptionKey, id> *options = @{
         NSWorkspaceDesktopImageScalingKey: scalingKey,
@@ -27,9 +26,8 @@ NSString *_SetWallpaper(int displayID, NSString *wallpaperPath, NSNumber *scalin
 
     NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
     NSURL *wallpaperURL = [NSURL fileURLWithPath:wallpaperPath];
-    NSError *error;
     [workspace setDesktopImageURL:wallpaperURL forScreen:screen options:options error:&error];
-    return error == nil ? nil : error.localizedDescription;
+    return true;
 }
 
 Napi::String SetWallpaper(const Napi::CallbackInfo& info) {
@@ -45,13 +43,18 @@ Napi::String SetWallpaper(const Napi::CallbackInfo& info) {
 
     NSColor *rgbaColor = [NSColor colorWithSRGBRed:red green:green blue:blue alpha:alpha];
 
-    NSString *error = _SetWallpaper(displayID, @(wallpaperPath.c_str()), @(scaling), @(allowClipping), rgbaColor);
+    NSError *error = nil;
+    bool success = _SetWallpaper(displayID, @(wallpaperPath.c_str()), @(scaling), @(allowClipping), rgbaColor, error);
     
     Napi::String res;
-    if (error == nil)
-        res = Napi::String::New(env, "");
+    if (success) {
+        if (error == nil)
+            res = Napi::String::New(env, "");
+        else
+            res = Napi::String::New(env, error.localizedDescription.UTF8String);
+    }
     else
-        res = Napi::String::New(env, std::string([error UTF8String]));
+        res = Napi::String::New(env, "Invalid displayID");
     return res;
 }
 
@@ -70,19 +73,20 @@ Napi::String GetWallpaperPathForScreen(const Napi::CallbackInfo& info) {
 
     NSString *wallpaperPath = _GetWallpaperPathForScreen(displayID);
     
-    Napi::String res = Napi::String::New(env, std::string([wallpaperPath UTF8String]));
+    Napi::String res = Napi::String::New(env, wallpaperPath == nil ? "" : std::string([wallpaperPath UTF8String]));
     return res;
 }
 
-void _GetWallpaperOptionsForScreen(int displayID, NSNumber **scaling, NSNumber **allowClipping, NSColor **fillColor) {
+bool _GetWallpaperOptionsForScreen(int displayID, NSNumber **scaling, NSNumber **allowClipping, NSColor **fillColor) {
     NSScreen *screen = GetScreenWithID((CGDirectDisplayID) displayID);
     if (screen == nil)
-        return;
+        return false;
     NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
     NSDictionary<NSWorkspaceDesktopImageOptionKey, id> *options = [workspace desktopImageOptionsForScreen:screen];
     *scaling = options[NSWorkspaceDesktopImageScalingKey];
     *allowClipping = options[NSWorkspaceDesktopImageAllowClippingKey];
     *fillColor = options[NSWorkspaceDesktopImageFillColorKey];
+    return true;
 }
 
 Napi::Object GetWallpaperOptionsForScreen(const Napi::CallbackInfo& info) {
@@ -92,15 +96,17 @@ Napi::Object GetWallpaperOptionsForScreen(const Napi::CallbackInfo& info) {
     NSNumber *scaling, *allowClipping;
     NSColor *fillColor;
 
-    _GetWallpaperOptionsForScreen(displayID, &scaling, &allowClipping, &fillColor);
+    bool success = _GetWallpaperOptionsForScreen(displayID, &scaling, &allowClipping, &fillColor);
 
     auto obj = Napi::Object::New(env);
-    obj.Set(Napi::String::New(env, "scaling"), scaling == nil ? -1 : Napi::Number::New(env, [scaling intValue]));
-    obj.Set(Napi::String::New(env, "allowClipping"), allowClipping == nil ? -1 : Napi::Number::New(env, [allowClipping intValue]));
-    obj.Set(Napi::String::New(env, "red"), Napi::Number::New(env, (double)[fillColor redComponent]));
-    obj.Set(Napi::String::New(env, "green"), Napi::Number::New(env, (double)[fillColor greenComponent]));
-    obj.Set(Napi::String::New(env, "blue"), Napi::Number::New(env, (double)[fillColor blueComponent]));
-    obj.Set(Napi::String::New(env, "alpha"), Napi::Number::New(env, (double)[fillColor alphaComponent]));
+    if (success) {
+        obj.Set(Napi::String::New(env, "scaling"), Napi::Number::New(env, scaling == nil ? -1 : [scaling intValue]));
+        obj.Set(Napi::String::New(env, "allowClipping"), Napi::Number::New(env, allowClipping == nil ? -1 : [allowClipping intValue]));
+        obj.Set(Napi::String::New(env, "red"), Napi::Number::New(env, (double)[fillColor redComponent]));
+        obj.Set(Napi::String::New(env, "green"), Napi::Number::New(env, (double)[fillColor greenComponent]));
+        obj.Set(Napi::String::New(env, "blue"), Napi::Number::New(env, (double)[fillColor blueComponent]));
+        obj.Set(Napi::String::New(env, "alpha"), Napi::Number::New(env, (double)[fillColor alphaComponent]));
+    }
     return obj;
 }
 
