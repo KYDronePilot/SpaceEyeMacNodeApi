@@ -2,7 +2,8 @@
   "name": "earth_from_space_live_mac_node_api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "gypfile": true,
   "scripts": {
     "configure": "node-gyp configure",
@@ -14,6 +15,9 @@
     "clean": "node-gyp clean",
     "prepare": "npm run build"
   },
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
     "@types/node": "^14.0.13",
     "cpx": "^1.5.0",
