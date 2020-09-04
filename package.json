@@ -1,5 +1,5 @@
 {
-  "name": "SpaceEyeMacNodeApi",
+  "name": "space-eye-mac-node-api",
   "version": "1.0.0",
   "description": "Native Mac API for SpaceEye app to set multi-monitor wallpaper images",
   "main": "dist/index.js",
