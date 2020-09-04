@@ -1,7 +1,7 @@
 {
-  "name": "earth_from_space_live_mac_node_api",
+  "name": "SpaceEyeMacNodeApi",
   "version": "1.0.0",
-  "description": "",
+  "description": "Native Mac API for SpaceEye app to set multi-monitor wallpaper images",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "gypfile": true,
