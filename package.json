@@ -24,6 +24,14 @@
     "bugs": {
         "url": "https://github.com/KYDronePilot/space-eye-mac-node-api/issues"
     },
+    "keywords": [
+        "nodejs",
+        "macos",
+        "objective-c",
+        "node-addon-api",
+        "wallpaper",
+        "spaceeye"
+    ],
     "homepage": "https://github.com/KYDronePilot/space-eye-mac-node-api",
     "devDependencies": {
         "@types/fs-extra": "^9.0.6",
