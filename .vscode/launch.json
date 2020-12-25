@@ -3,14 +3,14 @@
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [{
-        "type": "lldb",
-        "request": "launch",
-        "name": "Launch Program",
-        "preLaunchTask": "npm: build",
-        "program": "/usr/local/bin/node",
-        "args": [
-           "${workspaceFolder}/dist/index.js"
-        ]
-     }]
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Launch Program",
+            "preLaunchTask": "npm: build",
+            "program": "/usr/local/bin/node",
+            "args": ["${workspaceFolder}/dist/index.js"]
+        }
+    ]
 }

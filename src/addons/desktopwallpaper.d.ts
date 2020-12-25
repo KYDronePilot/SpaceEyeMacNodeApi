@@ -7,11 +7,9 @@ export function SetWallpaper(
     green: number,
     blue: number,
     alpha: number
-): string;
+): string
 
-export function GetWallpaperPathForScreen(
-    displayID: number
-): string;
+export function GetWallpaperPathForScreen(displayID: number): string
 
 export interface ReturnedWallpaperOptions {
     scaling?: number
@@ -22,6 +20,4 @@ export interface ReturnedWallpaperOptions {
     alpha?: number
 }
 
-export function GetWallpaperOptionsForScreen(
-    displayID: number
-): ReturnedWallpaperOptions;
+export function GetWallpaperOptionsForScreen(displayID: number): ReturnedWallpaperOptions

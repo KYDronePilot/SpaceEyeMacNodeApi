@@ -1,1 +1,1 @@
-export * as DesktopWallpaper from './desktopwallpaper';
+export * as DesktopWallpaper from './desktopwallpaper'

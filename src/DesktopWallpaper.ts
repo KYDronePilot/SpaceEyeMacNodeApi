@@ -1,4 +1,4 @@
-import { DesktopWallpaper as DesktopWallpaperRaw } from './addons';
+import { DesktopWallpaper as DesktopWallpaperRaw } from './addons'
 
 /**
  * How to scale the desktop image.
@@ -28,22 +28,22 @@ export interface DesktopFillColor {
     /**
      * Red channel: (0 - 255)
      */
-    red: number;
+    red: number
 
     /**
      * Green channel: (0 - 255)
      */
-    green: number;
+    green: number
 
     /**
      * Blue channel: (0 - 255)
      */
-    blue: number;
+    blue: number
 
     /**
      * Alpha channel: (0.0 - 1.0)
      */
-    alpha: number;
+    alpha: number
 }
 
 /**
@@ -91,27 +91,28 @@ function _8bitColorToFloat(color: number): number {
  * @return Desktop image options for screen
  */
 export function GetWallpaperOptionsForScreen(displayID: number): DesktopImageOptions {
-    const rawOptions = DesktopWallpaperRaw.GetWallpaperOptionsForScreen(
-        displayID
-    )
+    const rawOptions = DesktopWallpaperRaw.GetWallpaperOptionsForScreen(displayID)
     if (
-        rawOptions.scaling == undefined
-        && rawOptions.allowClipping == undefined
-        && rawOptions.red == undefined
-        && rawOptions.green == undefined
-        && rawOptions.blue == undefined
-        && rawOptions.alpha == undefined
+        rawOptions.scaling == undefined &&
+        rawOptions.allowClipping == undefined &&
+        rawOptions.red == undefined &&
+        rawOptions.green == undefined &&
+        rawOptions.blue == undefined &&
+        rawOptions.alpha == undefined
     )
         throw new Error('displayID likely invalid')
     return {
-        imageScaling: rawOptions.scaling! == -1 ? ImageScaling.proportionallyUpOrDown : rawOptions.scaling! as ImageScaling,
-        allowClipping: rawOptions.allowClipping! == 0,  // -1 and 1 are equivalent in this case
+        imageScaling:
+            rawOptions.scaling! == -1
+                ? ImageScaling.proportionallyUpOrDown
+                : (rawOptions.scaling! as ImageScaling),
+        allowClipping: rawOptions.allowClipping! == 0, // -1 and 1 are equivalent in this case
         desktopFillColor: {
             red: _floatTo8bitColor(rawOptions.red!),
             green: _floatTo8bitColor(rawOptions.green!),
             blue: _floatTo8bitColor(rawOptions.blue!),
             alpha: rawOptions.alpha!,
-        }
+        },
     }
 }
 
@@ -131,8 +132,12 @@ export function GetWallpaperPathForScreen(displayID: number): string {
  * @param wallpaperPath - Path to image
  * @param options - Desktop image options
  */
-export function SetWallpaper(displayID: number, wallpaperPath: string, options?: DesktopImageOptions) {
-    const fullOptions = options ?? GetWallpaperOptionsForScreen(displayID);
+export function SetWallpaper(
+    displayID: number,
+    wallpaperPath: string,
+    options?: DesktopImageOptions
+) {
+    const fullOptions = options ?? GetWallpaperOptionsForScreen(displayID)
     const res = DesktopWallpaperRaw.SetWallpaper(
         displayID,
         wallpaperPath,
@@ -141,8 +146,7 @@ export function SetWallpaper(displayID: number, wallpaperPath: string, options?:
         _8bitColorToFloat(fullOptions.desktopFillColor.red),
         _8bitColorToFloat(fullOptions.desktopFillColor.green),
         _8bitColorToFloat(fullOptions.desktopFillColor.blue),
-        _8bitColorToFloat(fullOptions.desktopFillColor.alpha),
+        _8bitColorToFloat(fullOptions.desktopFillColor.alpha)
     )
-    if (res !== '')
-        throw new Error(`Error setting wallpaper: ${res}`)
+    if (res !== '') throw new Error(`Error setting wallpaper: ${res}`)
 }

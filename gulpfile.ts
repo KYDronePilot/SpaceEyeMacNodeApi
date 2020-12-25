@@ -15,19 +15,16 @@ const BUILT_RELEASE_ADDON = path.join(BUILD, 'Release', 'desktopwallpaper.node')
 
 const defaultSpawnOptions: SpawnOptions = {
     env: {
-        PATH: EXTENDED_PATH
+        PATH: EXTENDED_PATH,
     },
-    stdio: 'inherit'
+    stdio: 'inherit',
 }
 
 /**
  * Clean old build/dist files.
  */
 async function clean() {
-    return Promise.all([
-        fse.remove(BUILD),
-        fse.remove(DIST)
-    ])
+    return Promise.all([fse.remove(BUILD), fse.remove(DIST)])
 }
 
 /**
