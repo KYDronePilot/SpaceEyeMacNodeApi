@@ -7,9 +7,11 @@ set multi-monitor wallpaper images.
 
 This package utilizes the
 [`node-addon-api`](https://github.com/nodejs/node-addon-api) to interface NodeJS
-directly with `AppKit` in Objective-C, to set the wallpaper on macOS computers.
-This package is designed specifically for use with the
-[SpaceEye app](https://github.com/KYDronePilot/SpaceEye).
+directly with `AppKit`'s
+[`NSWorkspace`](https://developer.apple.com/documentation/appkit/nsworkspace?language=objc)
+in Objective-C, to set the wallpaper on macOS computers. This package is
+designed specifically for use with the [SpaceEye
+app](https://github.com/KYDronePilot/SpaceEye).
 
 ## Related
 
